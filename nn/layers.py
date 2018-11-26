@@ -4,6 +4,8 @@ from nn.init import initalize
 class Layer:
     """Base class for all neural network modules.
     You must implement forward and backward method to inherit this class.
+    All the trainable parameters have to be stored in params and grads to be
+    handled by the optimizer.
     """
     def __init__(self):
         self.params, self.grads = dict(), dict()

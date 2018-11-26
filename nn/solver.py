@@ -2,6 +2,23 @@ import numpy as np
 import nn.optim as optim
 
 class Solver:
+    """A encapsulated module for training neural network model.
+    This class is in charge of 1) handle training settings,
+    2) training the model and 3) validate the model and shows the results
+
+    Args:
+        - model: Network instance. It must have modules attribute.
+        - data: Dataset to train and validate.
+    Optional Args:
+        - optim (str): Update rule. Only support sgd method.
+        - optim_config (dict): Additional config of optim rule. e.g. lr.
+        - lr_decay (float): Decaying rate of LR. LR is decayed at every epoch.
+        - batch_size (int): Batch size when training.
+        - num_epochs (int): Maximum epochs of training.
+        - verbose (bool): Decide wheter print the results or not.
+        - flatten_input (bool): If True, flatten the input to make 
+          suitable for the FC (linear) layer.
+    """
     def __init__(self, model, data, **kwargs):
         self.model = model
         self.X_train = data["X_train"]
@@ -47,6 +64,8 @@ class Solver:
         return loss
 
     def train(self):
+        """Train the model
+        """
         num_train = self.X_train.shape[0]
         steps_per_epoch = max(num_train//self.batch_size, 1)
         num_steps = self.num_epochs * steps_per_epoch
@@ -79,6 +98,15 @@ class Solver:
                     print("  Val accuracy: {:.3f}".format(val_acc))
 
     def validate(self, X, y, num_samples=None, batch_size=100):
+        """Validate the model
+
+        Args:
+        - X: Data X (feature).
+        - y: Data y (label).
+        - num_samples (None or int): If None, use all data for test 
+          and if specifed only cover num_samples data.
+        - batch_size (int): Batch size when validate.
+        """
         # Maybe subsample the data
         N = X.shape[0]
         if num_samples is not None and N > num_samples:
