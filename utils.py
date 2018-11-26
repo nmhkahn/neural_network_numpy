@@ -2,7 +2,8 @@ import numpy as np
 from random import randrange
 
 def rel_error(x, y):
-  """ returns relative error """
+  """Calculate relative error
+  """
   return np.max(np.abs(x - y) / (np.maximum(1e-8, np.abs(x) + np.abs(y))))
 
 
@@ -34,8 +35,7 @@ def eval_numerical_gradient(f, x, verbose=True, h=0.00001):
 
 
 def eval_numerical_gradient_array(f, x, df, h=1e-5):
-    """
-    Evaluate a numeric gradient for a function that accepts a numpy
+    """Evaluate a numeric gradient for a function that accepts a numpy
     array and returns a numpy array.
     """
     grad = np.zeros_like(x)
