@@ -180,7 +180,7 @@ class Conv2d(Layer):
         super().__init__()
         
         self.params["w"] = initalize(
-            (in_dims, out_dims, ksize, ksize), 
+            (out_dims, in_dims, ksize, ksize), 
             init_mode, init_scale)
         self.params["b"] = initalize(out_dims, "zero")
         
@@ -198,7 +198,7 @@ class Conv2d(Layer):
         self.x = x[:]
         
         N, C, H, W = x.shape
-        F, HH, WW = self.in_dims, self.ksize, self.ksize
+        F, HH, WW = self.out_dims, self.ksize, self.ksize
         stride, pad = self.stride, self.pad
 
         # padding
