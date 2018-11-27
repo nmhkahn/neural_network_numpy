@@ -21,7 +21,12 @@ class Linear(Layer):
     """Linear (fully-connected) layer.
 
     Args:
-        - in_dims (int): 
+        - in_dims (int): Input dimension of linear layer.
+        - out_dims (int): Output dimension of linear layer.
+        - init_mode (str): Weight initalize method. See `nn.init.py`.
+          linear|normal|xavier|he are the possible options.
+        - init_scale (float): Weight initalize scale for the normal init way.
+          See `nn.init.py`.
         
     """
     def __init__(self, in_dims, out_dims, init_mode="linear", init_scale=1e-3):
@@ -31,6 +36,11 @@ class Linear(Layer):
         self.params["b"] = initialize(out_dims, "zero")
     
     def forward(self, x):
+        """Calculate forward propagation.
+
+        Returns:
+            - out (numpy.ndarray): Output feature of this layer.
+        """
         ######################################################################
         # TODO: Linear 레이어의 forward propagation 구현.
         ######################################################################
@@ -42,6 +52,14 @@ class Linear(Layer):
         return out
 
     def backward(self, dout):
+        """Calculate backward propagation.
+
+        Args:
+            - dout (numpy.ndarray): Derivative of output `out` of this layer.
+        
+        Returns:
+            - dx (numpy.ndarray): Derivative of input `x` of this layer.
+        """
         ######################################################################
         # TODO: Linear 레이어의 backward propagation 구현.
         ######################################################################
@@ -147,10 +165,22 @@ class Tanh(Layer):
 
 
 class SoftmaxCELoss(Layer):
+    """Softmax and cross-entropy loss layer.
+    """
     def __init__(self):
         super().__init__()
 
     def forward(self, x, y):
+        """Calculate both forward and backward propagation.
+        
+        Args:
+            - x (numpy.ndarray): Pre-softmax (score) matrix (or vector).
+            - y (numpy.ndarray): Label of the current data feature.
+
+        Returns:
+            - loss (float): Loss of current data.
+            - dx (numpy.ndarray): Derivative of pre-softmax matrix (or vector).
+        """
         ######################################################################
         # TODO: Softmax cross-entropy 레이어의 구현. 
         #        
@@ -172,6 +202,16 @@ class SoftmaxCELoss(Layer):
     
     
 class Conv2d(Layer):
+    """Convolution layer.
+
+    Args:
+        - in_dims (int): Input dimension of conv layer.
+        - out_dims (int): Output dimension of conv layer.
+        - ksize (int): Kernel size of conv layer.
+        - stride (int): Stride of conv layer.
+        - pad (int): Number of padding of conv layer.
+        - Other arguments are same as the Linear class.
+    """
     def __init__(
         self, 
         in_dims, out_dims,
@@ -273,6 +313,12 @@ class Conv2d(Layer):
     
 
 class MaxPool2d(Layer):
+    """Max pooling layer.
+
+    Args:
+        - ksize (int): Kernel size of maxpool layer.
+        - stride (int): Stride of maxpool layer.
+    """
     def __init__(self, ksize, stride):
         super().__init__()
         
