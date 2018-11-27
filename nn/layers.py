@@ -1,5 +1,5 @@
 import numpy as np
-from nn.init import initalize
+from nn.init import initialize
 
 class Layer:
     """Base class for all neural network modules.
@@ -18,16 +18,21 @@ class Layer:
 
 
 class Linear(Layer):
+    """Linear (fully-connected) layer.
+
+    Args:
+        - in_dims (int): 
+        
+    """
     def __init__(self, in_dims, out_dims, init_mode="linear", init_scale=1e-3):
         super().__init__()
 
-        self.params["w"] = initalize((in_dims, out_dims), init_mode, init_scale)
-        self.params["b"] = initalize(out_dims, "zero")
+        self.params["w"] = initialize((in_dims, out_dims), init_mode, init_scale)
+        self.params["b"] = initialize(out_dims, "zero")
     
     def forward(self, x):
         ######################################################################
-        # TODO: #
-        # #
+        # TODO: Linear 레이어의 forward propagation 구현.
         ######################################################################
         self.x = x[:]
         out = x.dot(self.params["w"]) + self.params["b"].T
@@ -38,8 +43,7 @@ class Linear(Layer):
 
     def backward(self, dout):
         ######################################################################
-        # TODO: #
-        # #
+        # TODO: Linear 레이어의 backward propagation 구현.
         ######################################################################
         x = self.x
         dx = dout.dot(self.params["w"].T).reshape(x.shape)
@@ -60,8 +64,7 @@ class ReLU(Layer):
 
     def forward(self, x):
         ######################################################################
-        # TODO: #
-        # #
+        # TODO: ReLU 레이어의 forward propagation 구현.
         ######################################################################
         self.x = x[:]
         out = np.clip(x, 0.0, None)
@@ -72,8 +75,7 @@ class ReLU(Layer):
 
     def backward(self, dout):
         ######################################################################
-        # TODO: #
-        # #
+        # TODO: ReLU 레이어의 backward propagation 구현.
         ######################################################################
         x = self.x
         out = np.clip(x, 0.0, None)
@@ -93,8 +95,7 @@ class Sigmoid(Layer):
 
     def forward(self, x):
         ######################################################################
-        # TODO: #
-        # #
+        # TODO: Sigmoid 레이어의 forward propagation 구현.
         ######################################################################
         self.x = x[:]
         out = 1/(1+np.exp(-x))
@@ -105,8 +106,7 @@ class Sigmoid(Layer):
 
     def backward(self, dout):
         ######################################################################
-        # TODO: #
-        # #
+        # TODO: Sigmoid 레이어의 backward propagation 구현.
         ######################################################################
         sigmoid = self.forward(self.x)
         dx = sigmoid*(1-sigmoid)*dout
@@ -123,8 +123,7 @@ class Tanh(Layer):
 
     def forward(self, x):
         ######################################################################
-        # TODO: #
-        # #
+        # TODO: Tanh 레이어의 forward propagation 구현.
         ######################################################################
         self.x = x[:]
         sigmoid2x = 1/(1+np.exp(-2*x))
@@ -136,8 +135,7 @@ class Tanh(Layer):
 
     def backward(self, dout):
         ######################################################################
-        # TODO: #
-        # #
+        # TODO: Tanh 레이어의 backward propagation 구현.
         ######################################################################
         tanh = self.forward(self.x)
         dx = (1-tanh**2)*dout
@@ -154,8 +152,10 @@ class SoftmaxCELoss(Layer):
 
     def forward(self, x, y):
         ######################################################################
-        # TODO: #
-        # #
+        # TODO: Softmax cross-entropy 레이어의 구현. 
+        #        
+        # NOTE: 이 메소드에서 forward/backward를 모두 수행하고, loss와 gradient (dx)를 
+        # 리턴해야 함.
         ######################################################################
         N = x.shape[0]
         
@@ -181,10 +181,10 @@ class Conv2d(Layer):
     ):
         super().__init__()
         
-        self.params["w"] = initalize(
+        self.params["w"] = initialize(
             (out_dims, in_dims, ksize, ksize), 
             init_mode, init_scale)
-        self.params["b"] = initalize(out_dims, "zero")
+        self.params["b"] = initialize(out_dims, "zero")
         
         self.in_dims = in_dims
         self.out_dims = out_dims
@@ -194,8 +194,9 @@ class Conv2d(Layer):
     
     def forward(self, x):
         ######################################################################
-        # TODO: #
-        # #
+        # TODO: Convolution 레이어의 forward propagation 구현.
+        #
+        # HINT: for-loop의 4-중첩으로 구현.
         ######################################################################
         self.x = x[:]
         
@@ -229,8 +230,9 @@ class Conv2d(Layer):
 
     def backward(self, dout):
         ######################################################################
-        # TODO: #
-        # #
+        # TODO: Convolution 레이어의 backward propagation 구현.
+        #
+        # HINT: for-loop의 4-중첩으로 구현.
         ######################################################################
         x, w, b  = self.x, self.params["w"], self.params["b"]
         stride, pad = self.stride, self.pad
@@ -279,8 +281,9 @@ class MaxPool2d(Layer):
         
     def forward(self, x):
         ######################################################################
-        # TODO: #
-        # #
+        # TODO: Max pooling 레이어의 forward propagation 구현.
+        #
+        # HINT: for-loop의 2-중첩으로 구현.
         ######################################################################
         self.x = x[:]
         pool_H, pool_W, stride = self.ksize, self.ksize, self.stride
@@ -299,8 +302,9 @@ class MaxPool2d(Layer):
 
     def backward(self, dout):
         ######################################################################
-        # TODO: #
-        # #
+        # TODO: Max pooling 레이어의 backward propagation 구현.
+        #
+        # HINT: for-loop의 4-중첩으로 구현.
         ######################################################################
         x, pool_H, pool_W, stride = self.x, self.ksize, self.ksize, self.stride
         N, C, H, W = x.shape

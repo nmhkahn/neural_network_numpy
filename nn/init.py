@@ -1,6 +1,6 @@
 import numpy as np
 
-def initalize(shape, mode="linear", scale=1.0):        
+def initialize(shape, mode="linear", scale=1.0):        
     if mode == "linear":
         return _linear_init(shape)
     elif mode == "zero":
