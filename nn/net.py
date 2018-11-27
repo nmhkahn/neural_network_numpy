@@ -36,16 +36,7 @@ class TwoLayerNet:
         # NOTE: 모든 레이어는 self.modules에 적절한 이름을 (e.g. "fc1")
         # key 값으로 사용하여 저장되어야 함.
         ######################################################################
-        self.modules["linear1"] = Linear(
-            input_dim, hidden_dim, 
-            init_mode, init_scale
-        )
-        self.modules["linear2"] = Linear(
-            hidden_dim, num_classes, 
-            init_mode, init_scale
-        )
-        self.modules["relu1"] = ReLU()
-        self.modules["softmax"] = SoftmaxCELoss()
+
         ######################################################################
         #                          END OF YOUR CODE                          #
         ######################################################################
@@ -66,9 +57,7 @@ class TwoLayerNet:
         # TODO: 현재 모델의 forward propagation을 구현. Softmax 레이어의 이전
         # 값인 scores를 계산하고, 이를 scores 변수에 저장해야 함.
         ######################################################################
-        out = self.modules["linear1"].forward(X)
-        out = self.modules["relu1"].forward(out)
-        scores = self.modules["linear2"].forward(out)
+
         ######################################################################
         #                          END OF YOUR CODE                          #
         ######################################################################
@@ -79,10 +68,7 @@ class TwoLayerNet:
         # 출력 결과인 loss를 loss 변수에 저장하며, 두번째 리턴값인 출력의
         # derivative를 사용하여 backward 연산을 역순으로 진행해야 함
         ######################################################################
-        loss, dout = self.modules["softmax"].forward(scores, y)
-        dout = self.modules["linear2"].backward(dout)
-        dout = self.modules["relu1"].backward(dout)
-        dout = self.modules["linear1"].backward(dout)
+
         ######################################################################
         #                          END OF YOUR CODE                          #
         ######################################################################
@@ -117,17 +103,7 @@ class FCNet:
         #
         # HINT: 임의의 레이어를 처리하기 위해 for loop를 사용해야 함.
         ######################################################################
-        dims = [input_dim] + hidden_dims + [num_classes]
-        for i in range(self.num_layers):
-            self.modules["linear"+str(i+1)] = Linear(
-                dims[i], dims[i+1],
-                init_mode, init_scale
-            )
-            
-            # no activation after the last layer
-            if i < self.num_layers-1:
-                self.modules["relu"+str(i+1)] = ReLU()
-        self.modules["softmax"] = SoftmaxCELoss()
+
         ######################################################################
         #                          END OF YOUR CODE                          #
         ######################################################################
@@ -143,11 +119,7 @@ class FCNet:
         #
         # HINT: 임의의 레이어를 처리하기 위해 for loop를 사용해야 함.
         ######################################################################
-        out = X
-        for i in range(self.num_layers-1):
-            out = self.modules["linear"+str(i+1)].forward(out)
-            out = self.modules["relu"+str(i+1)].forward(out)
-        scores = self.modules["linear"+str(self.num_layers)].forward(out)
+
         ######################################################################
         #                          END OF YOUR CODE                          #
         ######################################################################
@@ -160,11 +132,7 @@ class FCNet:
         #
         # HINT: 임의의 레이어를 처리하기 위해 for loop를 사용해야 함.
         ######################################################################
-        loss, dout = self.modules["softmax"].forward(scores, y)
-        dout = self.modules["linear"+str(self.num_layers)].backward(dout)
-        for i in reversed(range(self.num_layers-1)):
-            dout = self.modules["relu"+str(i+1)].backward(dout)
-            dout = self.modules["linear"+str(i+1)].backward(dout)
+
         ######################################################################
         #                          END OF YOUR CODE                          #
         ######################################################################
@@ -213,26 +181,7 @@ class ThreeLayerConvNet:
         # NOTE: 모든 레이어는 self.modules에 적절한 이름을 (e.g. "conv1")
         # key값으로 사용하여 저장되어야 함.
         ######################################################################
-        self.modules["conv1"] = Conv2d(
-            input_dim[0], num_filters,
-            ksize=ksize, stride=stride, pad=pad,
-            init_mode=init_mode, init_scale=init_scale
-        )
-        self.modules["relu1"] = ReLU()
-        self.modules["pool1"] = MaxPool2d(2, 2)
 
-        h, w = input_dim[1]//2, input_dim[2]//2
-
-        self.modules["linear1"] = Linear(
-            num_filters*h*w, hidden_dim,
-            init_mode, init_scale
-        )
-        self.modules["relu2"] = ReLU()
-        self.modules["linear2"] = Linear(
-            hidden_dim, num_classes,
-            init_mode, init_scale
-        )
-        self.modules["softmax"] = SoftmaxCELoss()
         ######################################################################
         #                          END OF YOUR CODE                          #
         ######################################################################
@@ -256,17 +205,7 @@ class ThreeLayerConvNet:
         # HINT: Linear forward 의 입력을 위해 feature를  flatten 시켜야 함.
         # e.g. (N, C, H, W) -> (N, C*H*W)
         ######################################################################
-        out = X
-        out = self.modules["conv1"].forward(out)
-        out = self.modules["relu1"].forward(out)
-        out = self.modules["pool1"].forward(out)
 
-        shape = out.shape
-        out = out.reshape(shape[0], -1)
-        
-        out = self.modules["linear1"].forward(out)
-        out = self.modules["relu2"].forward(out)
-        scores = self.modules["linear2"].forward(out)
         ######################################################################
         #                          END OF YOUR CODE                          #
         ######################################################################
@@ -280,15 +219,7 @@ class ThreeLayerConvNet:
         # HINT: Conv backward의 입력을 reshape 해야함 (forward시 미리 저장)
         # e.g. (N, C*H*W) -> (N, C, H, W)
         ######################################################################
-        loss, dout = self.modules["softmax"].forward(scores, y)
-        dout = self.modules["linear2"].backward(dout)
-        dout = self.modules["relu2"].backward(dout)
-        dout = self.modules["linear1"].backward(dout)
-        dout = dout.reshape(shape)
-        
-        dout = self.modules["pool1"].backward(dout)
-        dout = self.modules["relu1"].backward(dout)
-        dout = self.modules["conv1"].backward(dout)
+
         ######################################################################
         #                          END OF YOUR CODE                          #
         ######################################################################
