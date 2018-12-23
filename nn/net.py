@@ -28,13 +28,8 @@ class TwoLayerNet:
 ):
         self.modules = dict()
         ######################################################################
-        # TODO: 2-레이어 네트워크에 필요한 모듈들을 초기화. 필요한 모듈은
-        # input -> linear -> relu -> linear -> softmax 와 같으며, 첫번째
-        # linear 레이어는 hidden_dim을 출력 dimension으로, 두번째 레이어는
-        # num_classes를 출력 dimension으로 구현해야 함.
-        #
-        # NOTE: 모든 레이어는 self.modules에 적절한 이름을 (e.g. "fc1")
-        # key 값으로 사용하여 저장되어야 함.
+        # TODO: Initalize all the needed modules in this network which is:   #
+        # input -> linear -> relu -> linear -> softmax.                      #
         ######################################################################
         self.modules["linear1"] = Linear(
             input_dim, hidden_dim, 
@@ -63,8 +58,9 @@ class TwoLayerNet:
         """
         scores = None
         ######################################################################
-        # TODO: 현재 모델의 forward propagation을 구현. Softmax 레이어의 이전
-        # 값인 scores를 계산하고, 이를 scores 변수에 저장해야 함.
+        # TODO: Implement forward propagation. First, you should calculate   #
+        # scores which is pre-activation value of softmax, then store into   #
+        # scores variable.                                                   #
         ######################################################################
         out = self.modules["linear1"].forward(X)
         out = self.modules["relu1"].forward(out)
@@ -75,9 +71,8 @@ class TwoLayerNet:
         if y is None:
             return scores
         ######################################################################
-        # TODO: Backward propagation을 구현. Softmax cross entropy 레이어의
-        # 출력 결과인 loss를 loss 변수에 저장하며, 두번째 리턴값인 출력의
-        # derivative를 사용하여 backward 연산을 역순으로 진행해야 함
+        # TODO: Implement backward propagation using the loss from the       #
+        # softmax cross-entropy layer.                                       #
         ######################################################################
         loss, dout = self.modules["softmax"].forward(scores, y)
         dout = self.modules["linear2"].backward(dout)
@@ -111,11 +106,9 @@ class FCNet:
         self.modules = dict()
         self.num_layers = 1 + len(hidden_dims)
         ######################################################################
-        # TODO: 임의의 레이어를 가지는 FCNet에 필요한 모듈들을 초기화.
-        #
-        # NOTE: 모든 레이어는 self.modules에 적절한 이름을 (e.g. "fc1") key로 저장.
-        #
-        # HINT: 임의의 레이어를 처리하기 위해 for loop를 사용해야 함.
+        # TODO: Initalize the FCNet that has arbitrary number of layer.      #
+        # All the layers have to be stored in the self.modules with proper   #
+        # name as a key (e.g. "fc1").                                        #
         ######################################################################
         dims = [input_dim] + hidden_dims + [num_classes]
         for i in range(self.num_layers):
@@ -138,10 +131,9 @@ class FCNet:
         """
         scores = None
         ######################################################################
-        # TODO: 현재 모델의 forward propagation을 구현. Softmax 레이어의 이전
-        # 값인 scores를 계산하고, 이를 scores 변수에 저장해야 함.
-        #
-        # HINT: 임의의 레이어를 처리하기 위해 for loop를 사용해야 함.
+        # TODO: Implement forward propagation. First, you should calculate   #
+        # scores which is pre-activation value of softmax, then store into   #
+        # scores variable.                                                   #
         ######################################################################
         out = X
         for i in range(self.num_layers-1):
@@ -154,11 +146,8 @@ class FCNet:
         if y is None:
             return scores
         ######################################################################
-        # TODO: Backward propagation을 구현. Softmax cross entropy 레이어의
-        # 출력 결과인 loss를 loss 변수에 저장하며, 두번째 리턴값인 출력의
-        # derivative를 사용하여 backward 연산을 역순으로 진행해야 함.
-        #
-        # HINT: 임의의 레이어를 처리하기 위해 for loop를 사용해야 함.
+        # TODO: Implement backward propagation using the loss from the       #
+        # softmax cross-entropy layer.                                       #
         ######################################################################
         loss, dout = self.modules["softmax"].forward(scores, y)
         dout = self.modules["linear"+str(self.num_layers)].backward(dout)
@@ -204,14 +193,10 @@ class ThreeLayerConvNet:
 ):
         self.modules = dict()
         ######################################################################
-        # TODO: 3-레이어 conv 네트워크에 필요한 모듈들을 초기화. 필요한 모듈은
-        # input -> conv -> relu -> pool -> linear -> relu -> linear -> softmax
-        # 와 같음. 첫번째 conv 레이어는 num_filters, ksize, stride 와 pad를 인자로 받음.
-        # pool 레이어는 2x2 max pool을 사용하며, 첫번째 linear 레이어는 hidden_dim을 
-        # 출력 dimension으로, 두번째 레이어는 num_classes를 출력 dimension으로 구현해야 함.
-        #
-        # NOTE: 모든 레이어는 self.modules에 적절한 이름을 (e.g. "conv1")
-        # key값으로 사용하여 저장되어야 함.
+        # TODO: Initalize the three-layer CNN which has: input -> conv ->    #
+        # relu -> pool -> linear -> relu -> linear -> softmax.               #
+        # All the layers have to be stored in the self.modules with proper   #
+        # name as a key (e.g. "conv1").                                      #
         ######################################################################
         self.modules["conv1"] = Conv2d(
             input_dim[0], num_filters,
@@ -250,11 +235,9 @@ class ThreeLayerConvNet:
         """
         scores = None
         ######################################################################
-        # TODO: 현재 모델의 forward propagation을 구현. Softmax 레이어의 이전값인 
-        # scores를 계산하고, 이를 scores 변수에 저장해야 함.
-        #
-        # HINT: Linear forward 의 입력을 위해 feature를  flatten 시켜야 함.
-        # e.g. (N, C, H, W) -> (N, C*H*W)
+        # TODO: Implement forward propagation. First, you should calculate   #
+        # scores which is pre-activation value of softmax, then store into   #
+        # scores variable.                                                   #
         ######################################################################
         out = X
         out = self.modules["conv1"].forward(out)
@@ -273,12 +256,8 @@ class ThreeLayerConvNet:
         if y is None:
             return scores
         ######################################################################
-        # TODO: Backward propagation을 구현. Softmax cross entropy 레이어의
-        # 출력 결과인 loss를 loss 변수에 저장하며, 두번째 리턴값인 출력의
-        # derivative를 사용하여 backward 연산을 역순으로 진행해야 함.
-        #
-        # HINT: Conv backward의 입력을 reshape 해야함 (forward시 미리 저장)
-        # e.g. (N, C*H*W) -> (N, C, H, W)
+        # TODO: Implement backward propagation using the loss from the       #
+        # softmax cross-entropy layer.                                       #
         ######################################################################
         loss, dout = self.modules["softmax"].forward(scores, y)
         dout = self.modules["linear2"].backward(dout)
